@@ -8,17 +8,21 @@ export function useTodoModel(service: ITodoService) {
   useEffect(() => {
     const fetchTodos = async () => {
       const todoList = await service.list();
-      console.log(todoList);
+
       setTodos(todoList);
     };
 
     fetchTodos();
   }, [service]);
 
-  function handleSubmit(text: string) {
-    setTodos((old) => [...old, text]);
+  function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const newTodo = formData.get("todo")?.toString() || "";
 
-    service.create(text);
+    setTodos((old) => [...old, newTodo]);
+
+    service.create(newTodo);
   }
 
   return {
